@@ -967,20 +967,20 @@ public class PathParser extends NumberParser {
       current = reader.read();
     }
 
-  if (current != ',')
-    return false; // no comma.
+    if (current != ',')
+      return false; // no comma.
 
-  wsp2: for (;;) {
-    switch (current = reader.read()) {
-      default:
-        break wsp2;
-      case 0x20:
-      case 0x9:
-      case 0xD:
-      case 0xA:
-        break;
+    wsp2: for (;;) {
+      switch (current = reader.read()) {
+        default:
+          break wsp2;
+        case 0x20:
+        case 0x9:
+        case 0xD:
+        case 0xA:
+          break;
+      }
     }
-  }
-  return true; // had comma
+    return true; // had comma
   }
 }

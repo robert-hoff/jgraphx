@@ -1285,22 +1285,22 @@ public class mxCoordinateAssignment implements mxHierarchicalLayoutStage {
           int arrayOffset = reversed ? 2 : 0;
           double y = reversed ? layoutReversed ? this.rankBottomY[minRank] : this.rankTopY[minRank]
               : layoutReversed ? this.rankTopY[maxRank] : this.rankBottomY[maxRank];
-              double jetty = jettys[parallelEdgeCount * 4 + 1 + arrayOffset];
+          double jetty = jettys[parallelEdgeCount * 4 + 1 + arrayOffset];
 
-              // If the edge is reversed invert the y position within the channel,
-              // unless it is a single length edge
-              if (reversed != layoutReversed) {
-                jetty = -jetty;
-              }
+          // If the edge is reversed invert the y position within the channel,
+          // unless it is a single length edge
+          if (reversed != layoutReversed) {
+            jetty = -jetty;
+          }
 
-              y += jetty;
-              double x = jettys[parallelEdgeCount * 4 + arrayOffset];
+          y += jetty;
+          double x = jettys[parallelEdgeCount * 4 + arrayOffset];
 
-              if (orientation == SwingConstants.NORTH || orientation == SwingConstants.SOUTH) {
-                newPoints.add(new mxPoint(x, y));
-              } else {
-                newPoints.add(new mxPoint(y, x));
-              }
+          if (orientation == SwingConstants.NORTH || orientation == SwingConstants.SOUTH) {
+            newPoints.add(new mxPoint(x, y));
+          } else {
+            newPoints.add(new mxPoint(y, x));
+          }
         }
 
         // Declare variables to define loop through edge points and
@@ -1356,19 +1356,19 @@ public class mxCoordinateAssignment implements mxHierarchicalLayoutStage {
           int arrayOffset = reversed ? 2 : 0;
           double rankY = reversed ? layoutReversed ? this.rankTopY[maxRank] : this.rankBottomY[maxRank]
               : layoutReversed ? this.rankBottomY[minRank] : this.rankTopY[minRank];
-              double jetty = jettys[parallelEdgeCount * 4 + 3 - arrayOffset];
+          double jetty = jettys[parallelEdgeCount * 4 + 3 - arrayOffset];
 
-              if (reversed != layoutReversed) {
-                jetty = -jetty;
-              }
-              double y = rankY - jetty;
-              double x = jettys[parallelEdgeCount * 4 + 2 - arrayOffset];
+          if (reversed != layoutReversed) {
+            jetty = -jetty;
+          }
+          double y = rankY - jetty;
+          double x = jettys[parallelEdgeCount * 4 + 2 - arrayOffset];
 
-              if (orientation == SwingConstants.NORTH || orientation == SwingConstants.SOUTH) {
-                newPoints.add(new mxPoint(x, y));
-              } else {
-                newPoints.add(new mxPoint(y, x));
-              }
+          if (orientation == SwingConstants.NORTH || orientation == SwingConstants.SOUTH) {
+            newPoints.add(new mxPoint(x, y));
+          } else {
+            newPoints.add(new mxPoint(y, x));
+          }
         }
 
         if (edge.isReversed()) {

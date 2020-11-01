@@ -17,8 +17,7 @@ import java.util.zip.InflaterInputStream;
 /**
  * Utility class to extract the compression text portion of a PNG
  */
-public class mxPngTextDecoder
-{
+public class mxPngTextDecoder {
   private static final Logger log = Logger.getLogger(mxPngTextDecoder.class.getName());
 
   /**
@@ -34,48 +33,36 @@ public class mxPngTextDecoder
   /**
    * Decodes the zTXt chunk of the given PNG image stream.
    */
-  public static Map<String, String> decodeCompressedText(InputStream stream)
-  {
+  public static Map<String, String> decodeCompressedText(InputStream stream) {
     Map<String, String> result = new Hashtable<String, String>();
 
-    if (!stream.markSupported())
-    {
+    if (!stream.markSupported()) {
       stream = new BufferedInputStream(stream);
     }
     DataInputStream distream = new DataInputStream(stream);
 
-    try
-    {
+    try {
       long magic = distream.readLong();
-      if (magic != 0x89504e470d0a1a0aL)
-      {
+      if (magic != 0x89504e470d0a1a0aL) {
         throw new RuntimeException("PNGImageDecoder0");
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new RuntimeException("PNGImageDecoder1", e);
     }
 
-    do
-    {
-      try
-      {
+    do {
+      try {
         int length = distream.readInt();
         int type = distream.readInt();
         byte[] data = new byte[length];
         distream.readFully(data);
         distream.readInt(); // Move past the crc
 
-        if (type == PNG_CHUNK_IEND)
-        {
+        if (type == PNG_CHUNK_IEND) {
           return result;
-        }
-        else if (type == PNG_CHUNK_ZTXT)
-        {
+        } else if (type == PNG_CHUNK_ZTXT) {
           int currentIndex = 0;
-          while (data[currentIndex++] != 0)
-          {
+          while (data[currentIndex++] != 0) {
           }
 
           String key = new String(data, 0, currentIndex - 1);
@@ -86,33 +73,24 @@ public class mxPngTextDecoder
           // byte compressType = data[currentIndex++];
 
           StringBuffer value = new StringBuffer();
-          try
-          {
-            InputStream is = new ByteArrayInputStream(data,
-                currentIndex, length);
-            InputStream iis = new InflaterInputStream(is,
-                new Inflater(true));
+          try {
+            InputStream is = new ByteArrayInputStream(data, currentIndex, length);
+            InputStream iis = new InflaterInputStream(is, new Inflater(true));
 
             int c;
-            while ((c = iis.read()) != -1)
-            {
+            while ((c = iis.read()) != -1) {
               value.append((char) c);
             }
 
             result.put(String.valueOf(key), String.valueOf(value));
-          }
-          catch (Exception e)
-          {
+          } catch (Exception e) {
             log.log(Level.SEVERE, "Failed to decode PNG text", e);
           }
         }
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         log.log(Level.SEVERE, "Failed to decode PNG text", e);
         return null;
       }
-    }
-    while (true);
+    } while (true);
   }
 }

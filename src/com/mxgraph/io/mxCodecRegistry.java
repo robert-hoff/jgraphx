@@ -22,8 +22,7 @@ import com.mxgraph.model.mxGraphModel.mxVisibleChange;
  * {@link mxCodec} for an example.
  */
 @SuppressWarnings("all")
-public class mxCodecRegistry
-{
+public class mxCodecRegistry {
 
   private static final Logger log = Logger.getLogger(mxCodecRegistry.class.getName());
 
@@ -38,14 +37,13 @@ public class mxCodecRegistry
   protected static Hashtable<String, String> aliases = new Hashtable<String, String>();
 
   /**
-   * Holds the list of known packages. Packages are used to prefix short
-   * class names (eg. mxCell) in XML markup.
+   * Holds the list of known packages. Packages are used to prefix short class
+   * names (eg. mxCell) in XML markup.
    */
   protected static List<String> packages = new ArrayList<String>();
 
   // Registers the known codecs and package names
-  static
-  {
+  static {
     addPackage("com.mxgraph");
     addPackage("com.mxgraph.util");
     addPackage("com.mxgraph.model");
@@ -69,21 +67,18 @@ public class mxCodecRegistry
   }
 
   /**
-   * Registers a new codec and associates the name of the template constructor
-   * in the codec with the codec object. Automatically creates an alias if the
+   * Registers a new codec and associates the name of the template constructor in
+   * the codec with the codec object. Automatically creates an alias if the
    * codename and the classname are not equal.
    */
-  public static mxObjectCodec register(mxObjectCodec codec)
-  {
-    if (codec != null)
-    {
+  public static mxObjectCodec register(mxObjectCodec codec) {
+    if (codec != null) {
       String name = codec.getName();
       codecs.put(name, codec);
 
       String classname = getName(codec.getTemplate());
 
-      if (!classname.equals(name))
-      {
+      if (!classname.equals(name)) {
         addAlias(classname, name);
       }
     }
@@ -94,8 +89,7 @@ public class mxCodecRegistry
   /**
    * Adds an alias for mapping a classname to a codecname.
    */
-  public static void addAlias(String classname, String codecname)
-  {
+  public static void addAlias(String classname, String codecname) {
     aliases.put(classname, codecname);
   }
 
@@ -103,14 +97,13 @@ public class mxCodecRegistry
    * Returns a codec that handles the given object, which can be an object
    * instance or an XML node.
    *
-   * @param name Java class name.
+   * @param name
+   *          Java class name.
    */
-  public static mxObjectCodec getCodec(String name)
-  {
+  public static mxObjectCodec getCodec(String name) {
     String tmp = aliases.get(name);
 
-    if (tmp != null)
-    {
+    if (tmp != null) {
       name = tmp;
     }
 
@@ -118,24 +111,17 @@ public class mxCodecRegistry
 
     // Registers a new default codec for the given name
     // if no codec has been previously defined.
-    if (codec == null)
-    {
+    if (codec == null) {
       Object instance = getInstanceForName(name);
 
-      if (instance != null)
-      {
-        try
-        {
+      if (instance != null) {
+        try {
           codec = new mxObjectCodec(instance);
           register(codec);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           log.log(Level.FINEST, "Failed to create and register a codec for the name: " + name, e);
         }
-      }
-      else
-      {
+      } else {
         log.log(Level.FINEST, "Failed to create codec for " + name);
       }
     }
@@ -146,38 +132,31 @@ public class mxCodecRegistry
   /**
    * Adds the given package name to the list of known package names.
    *
-   * @param packagename Name of the package to be added.
+   * @param packagename
+   *          Name of the package to be added.
    */
-  public static void addPackage(String packagename)
-  {
+  public static void addPackage(String packagename) {
     packages.add(packagename);
   }
 
   /**
    * Creates and returns a new instance for the given class name.
    *
-   * @param name Name of the class to be instantiated.
+   * @param name
+   *          Name of the class to be instantiated.
    * @return Returns a new instance of the given class.
    */
-  public static Object getInstanceForName(String name)
-  {
+  public static Object getInstanceForName(String name) {
     Class<?> clazz = getClassForName(name);
 
-    if (clazz != null)
-    {
-      if (clazz.isEnum())
-      {
+    if (clazz != null) {
+      if (clazz.isEnum()) {
         // For an enum, use the first constant as the default instance
         return clazz.getEnumConstants()[0];
-      }
-      else
-      {
-        try
-        {
+      } else {
+        try {
           return clazz.newInstance();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           log.log(Level.FINEST, "Failed to construct class instance for " + name, e);
         }
       }
@@ -194,28 +173,20 @@ public class mxCodecRegistry
    * @param name
    * @return Returns the class for the given name.
    */
-  public static Class<?> getClassForName(String name)
-  {
-    try
-    {
+  public static Class<?> getClassForName(String name) {
+    try {
       return Class.forName(name);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       log.log(Level.FINEST, "Failed to get a class object for " + name, e);
     }
 
-    for (int i = 0; i < packages.size(); i++)
-    {
+    for (int i = 0; i < packages.size(); i++) {
       String s = packages.get(i);
       String nameWithPackage = s + "." + name;
 
-      try
-      {
+      try {
         return Class.forName(nameWithPackage);
-      }
-      catch (Exception e)
-      {
+      } catch (Exception e) {
         log.log(Level.FINEST, "Failed to get a class object for " + nameWithPackage, e);
       }
     }
@@ -225,33 +196,25 @@ public class mxCodecRegistry
   }
 
   /**
-   * Returns the name that identifies the codec associated
-   * with the given instance..
+   * Returns the name that identifies the codec associated with the given
+   * instance..
    *
    * The I/O system uses unqualified classnames, eg. for a
-   * <code>com.mxgraph.model.mxCell</code> this returns
-   * <code>mxCell</code>.
+   * <code>com.mxgraph.model.mxCell</code> this returns <code>mxCell</code>.
    *
-   * @param instance Instance whose node name should be returned.
+   * @param instance
+   *          Instance whose node name should be returned.
    * @return Returns a string that identifies the codec.
    */
-  public static String getName(Object instance)
-  {
+  public static String getName(Object instance) {
     Class<? extends Object> type = instance.getClass();
 
-    if (type.isArray() || Collection.class.isAssignableFrom(type)
-        || Map.class.isAssignableFrom(type))
-    {
+    if (type.isArray() || Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
       return "Array";
-    }
-    else
-    {
-      if (packages.contains(type.getPackage().getName()))
-      {
+    } else {
+      if (packages.contains(type.getPackage().getName())) {
         return type.getSimpleName();
-      }
-      else
-      {
+      } else {
         return type.getName();
       }
     }

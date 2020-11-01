@@ -22,14 +22,13 @@ import java.io.IOException;
 import java.util.MissingResourceException;
 
 /**
- * This class is the superclass of all parsers. It provides localization
- * and error handling methods.
+ * This class is the superclass of all parsers. It provides localization and
+ * error handling methods.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
  */
 @SuppressWarnings("all")
-public abstract class AbstractParser implements Parser
-{
+public abstract class AbstractParser implements Parser {
 
   /**
    * The default resource bundle base name.
@@ -54,26 +53,27 @@ public abstract class AbstractParser implements Parser
   /**
    * Returns the current character value.
    */
-  public int getCurrent()
-  {
+  public int getCurrent() {
     return current;
   }
 
   /**
    * Allow an application to register an error event handler.
    *
-   * <p>If the application does not register an error event handler,
-   * all error events reported by the parser will cause an exception
-   * to be thrown.
+   * <p>
+   * If the application does not register an error event handler, all error events
+   * reported by the parser will cause an exception to be thrown.
    *
-   * <p>Applications may register a new or different handler in the
-   * middle of a parse, and the parser must begin using the new
-   * handler immediately.</p>
-   * @param handler The error handler.
+   * <p>
+   * Applications may register a new or different handler in the middle of a
+   * parse, and the parser must begin using the new handler immediately.
+   * </p>
+   * 
+   * @param handler
+   *          The error handler.
    */
   @Override
-  public void setErrorHandler(ErrorHandler handler)
-  {
+  public void setErrorHandler(ErrorHandler handler) {
     errorHandler = handler;
   }
 
@@ -81,102 +81,90 @@ public abstract class AbstractParser implements Parser
    * Parses the given string.
    */
   @Override
-  public void parse(String s) throws ParseException
-  {
-    try
-    {
+  public void parse(String s) throws ParseException {
+    try {
       reader = new StringNormalizingReader(s);
       doParse();
-    }
-    catch (IOException e)
-    {
-      errorHandler.error(new ParseException(createErrorMessage(
-          "io.exception", null), e));
+    } catch (IOException e) {
+      errorHandler.error(new ParseException(createErrorMessage("io.exception", null), e));
     }
   }
 
   /**
-   * Method responsible for actually parsing data after AbstractParser
-   * has initialized itself.
+   * Method responsible for actually parsing data after AbstractParser has
+   * initialized itself.
    */
   protected abstract void doParse() throws ParseException, IOException;
 
   /**
    * Signals an error to the error handler.
-   * @param key The message key in the resource bundle.
-   * @param args The message arguments.
+   * 
+   * @param key
+   *          The message key in the resource bundle.
+   * @param args
+   *          The message arguments.
    */
-  protected void reportError(String key, Object[] args) throws ParseException
-  {
-    errorHandler.error(new ParseException(createErrorMessage(key, args),
-        reader.getLine(), reader.getColumn()));
+  protected void reportError(String key, Object[] args) throws ParseException {
+    errorHandler.error(new ParseException(createErrorMessage(key, args), reader.getLine(), reader.getColumn()));
   }
 
   /**
-   * simple api to call often reported error.
-   * Just a wrapper for reportError().
+   * simple api to call often reported error. Just a wrapper for reportError().
    *
-   * @param expectedChar what caller expected
-   * @param currentChar what caller found
+   * @param expectedChar
+   *          what caller expected
+   * @param currentChar
+   *          what caller found
    */
-  protected void reportCharacterExpectedError(char expectedChar,
-      int currentChar)
-  {
-    reportError("character.expected", new Object[] {
-        new Character(expectedChar), new Integer(currentChar) });
+  protected void reportCharacterExpectedError(char expectedChar, int currentChar) {
+    reportError("character.expected", new Object[] { new Character(expectedChar), new Integer(currentChar) });
 
   }
 
   /**
-   * simple api to call often reported error.
-   * Just a wrapper for reportError().
+   * simple api to call often reported error. Just a wrapper for reportError().
    *
-   * @param currentChar what the caller found and didnt expect
+   * @param currentChar
+   *          what the caller found and didnt expect
    */
-  protected void reportUnexpectedCharacterError(int currentChar)
-  {
-    reportError("character.unexpected", new Object[] { new Integer(
-        currentChar) });
+  protected void reportUnexpectedCharacterError(int currentChar) {
+    reportError("character.unexpected", new Object[] { new Integer(currentChar) });
 
   }
 
   /**
    * Returns a localized error message.
-   * @param key The message key in the resource bundle.
-   * @param args The message arguments.
+   * 
+   * @param key
+   *          The message key in the resource bundle.
+   * @param args
+   *          The message arguments.
    */
-  protected String createErrorMessage(String key, Object[] args)
-  {
-    try
-    {
+  protected String createErrorMessage(String key, Object[] args) {
+    try {
       // TODO Replace with mx localisation
       // return formatMessage(key, args);
       return "";
-    }
-    catch (MissingResourceException e)
-    {
+    } catch (MissingResourceException e) {
       return key;
     }
   }
 
   /**
    * Returns the resource bundle base name.
+   * 
    * @return BUNDLE_CLASSNAME.
    */
-  protected String getBundleClassName()
-  {
+  protected String getBundleClassName() {
     return BUNDLE_CLASSNAME;
   }
 
   /**
    * Skips the whitespaces in the current reader.
    */
-  protected void skipSpaces() throws IOException
-  {
-    for (;;)
-    {
-      switch (current)
-      {
+  protected void skipSpaces() throws IOException {
+    for (;;) {
+      switch (current) {
         default:
           return;
         case 0x20:
@@ -191,12 +179,9 @@ public abstract class AbstractParser implements Parser
   /**
    * Skips the whitespaces and an optional comma.
    */
-  protected void skipCommaSpaces() throws IOException
-  {
-    wsp1: for (;;)
-    {
-      switch (current)
-      {
+  protected void skipCommaSpaces() throws IOException {
+    wsp1: for (;;) {
+      switch (current) {
         default:
           break wsp1;
         case 0x20:
@@ -206,20 +191,17 @@ public abstract class AbstractParser implements Parser
       }
       current = reader.read();
     }
-  if (current == ',')
-  {
-    wsp2: for (;;)
-    {
-      switch (current = reader.read())
-      {
-        default:
-          break wsp2;
-        case 0x20:
-        case 0x9:
-        case 0xD:
-        case 0xA:
+    if (current == ',') {
+      wsp2: for (;;) {
+        switch (current = reader.read()) {
+          default:
+            break wsp2;
+          case 0x20:
+          case 0x9:
+          case 0xD:
+          case 0xA:
+        }
       }
     }
-  }
   }
 }

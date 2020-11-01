@@ -57,9 +57,7 @@ import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
 
 @SuppressWarnings("all")
-public class mxGraphHandler extends mxMouseAdapter implements
-DropTargetListener
-{
+public class mxGraphHandler extends mxMouseAdapter implements DropTargetListener {
 
   /**
    *
@@ -212,8 +210,8 @@ DropTargetListener
   protected transient Rectangle previewBounds = null;
 
   /**
-   * Workaround for alt-key-state not correct in mouseReleased. Note: State
-   * of the alt-key is not available during drag-and-drop.
+   * Workaround for alt-key-state not correct in mouseReleased. Note: State of the
+   * alt-key is not available during drag-and-drop.
    */
   protected transient boolean gridEnabledEvent = false;
 
@@ -231,17 +229,14 @@ DropTargetListener
    *
    * @param graphComponent
    */
-  public mxGraphHandler(final mxGraphComponent graphComponent)
-  {
+  public mxGraphHandler(final mxGraphComponent graphComponent) {
     this.graphComponent = graphComponent;
     marker = createMarker();
     movePreview = createMovePreview();
 
     // Installs the paint handler
-    graphComponent.addListener(mxEvent.AFTER_PAINT, new mxIEventListener()
-    {
-      public void invoke(Object sender, mxEventObject evt)
-      {
+    graphComponent.addListener(mxEvent.AFTER_PAINT, new mxIEventListener() {
+      public void invoke(Object sender, mxEventObject evt) {
         Graphics g = (Graphics) evt.getProperty("g");
         paint(g);
       }
@@ -258,16 +253,11 @@ DropTargetListener
     installDropTargetHandler();
 
     // Listens to changes of the transferhandler
-    graphComponent.addPropertyChangeListener(new PropertyChangeListener()
-    {
-      public void propertyChange(PropertyChangeEvent evt)
-      {
-        if (evt.getPropertyName().equals("transferHandler"))
-        {
-          if (currentDropTarget != null)
-          {
-            currentDropTarget
-            .removeDropTargetListener(mxGraphHandler.this);
+    graphComponent.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("transferHandler")) {
+          if (currentDropTarget != null) {
+            currentDropTarget.removeDropTargetListener(mxGraphHandler.this);
           }
 
           installDropTargetHandler();
@@ -281,40 +271,25 @@ DropTargetListener
   /**
    *
    */
-  protected void installDragGestureHandler()
-  {
-    DragGestureListener dragGestureListener = new DragGestureListener()
-    {
-      public void dragGestureRecognized(DragGestureEvent e)
-      {
-        if (graphComponent.isDragEnabled() && first != null)
-        {
-          final TransferHandler th = graphComponent
-              .getTransferHandler();
+  protected void installDragGestureHandler() {
+    DragGestureListener dragGestureListener = new DragGestureListener() {
+      public void dragGestureRecognized(DragGestureEvent e) {
+        if (graphComponent.isDragEnabled() && first != null) {
+          final TransferHandler th = graphComponent.getTransferHandler();
 
-          if (th instanceof mxGraphTransferHandler)
-          {
+          if (th instanceof mxGraphTransferHandler) {
             final mxGraphTransferable t = (mxGraphTransferable) ((mxGraphTransferHandler) th)
                 .createTransferable(graphComponent);
 
-            if (t != null)
-            {
-              e.startDrag(null, mxSwingConstants.EMPTY_IMAGE,
-                  new Point(), t, new DragSourceAdapter()
-              {
+            if (t != null) {
+              e.startDrag(null, mxSwingConstants.EMPTY_IMAGE, new Point(), t, new DragSourceAdapter() {
 
                 /**
                  *
                  */
                 @Override
-                public void dragDropEnd(
-                    DragSourceDropEvent dsde)
-                {
-                  ((mxGraphTransferHandler) th)
-                  .exportDone(
-                      graphComponent,
-                      t,
-                      TransferHandler.NONE);
+                public void dragDropEnd(DragSourceDropEvent dsde) {
+                  ((mxGraphTransferHandler) th).exportDone(graphComponent, t, TransferHandler.NONE);
                   first = null;
                 }
               });
@@ -325,29 +300,22 @@ DropTargetListener
     };
 
     DragSource dragSource = new DragSource();
-    dragSource.createDefaultDragGestureRecognizer(graphComponent
-        .getGraphControl(),
-        isCloneEnabled() ? DnDConstants.ACTION_COPY_OR_MOVE
-            : DnDConstants.ACTION_MOVE, dragGestureListener);
+    dragSource.createDefaultDragGestureRecognizer(graphComponent.getGraphControl(),
+        isCloneEnabled() ? DnDConstants.ACTION_COPY_OR_MOVE : DnDConstants.ACTION_MOVE, dragGestureListener);
   }
 
   /**
    *
    */
-  protected void installDropTargetHandler()
-  {
+  protected void installDropTargetHandler() {
     DropTarget dropTarget = graphComponent.getDropTarget();
 
-    try
-    {
-      if (dropTarget != null)
-      {
+    try {
+      if (dropTarget != null) {
         dropTarget.addDropTargetListener(this);
         currentDropTarget = dropTarget;
       }
-    }
-    catch (TooManyListenersException e)
-    {
+    } catch (TooManyListenersException e) {
       // should not happen... swing drop target is multicast
       log.log(Level.SEVERE, "Failed to install drop target handler", e);
     }
@@ -356,22 +324,18 @@ DropTargetListener
   /**
    *
    */
-  public boolean isVisible()
-  {
+  public boolean isVisible() {
     return visible;
   }
 
   /**
    *
    */
-  public void setVisible(boolean value)
-  {
-    if (visible != value)
-    {
+  public void setVisible(boolean value) {
+    if (visible != value) {
       visible = value;
 
-      if (previewBounds != null)
-      {
+      if (previewBounds != null) {
         graphComponent.getGraphControl().repaint(previewBounds);
       }
     }
@@ -380,35 +344,25 @@ DropTargetListener
   /**
    *
    */
-  public void setPreviewBounds(Rectangle bounds)
-  {
-    if (bounds == null && previewBounds != null
-        || bounds != null && previewBounds == null
-        || bounds != null && previewBounds != null && !bounds
-        .equals(previewBounds))
-    {
+  public void setPreviewBounds(Rectangle bounds) {
+    if (bounds == null && previewBounds != null || bounds != null && previewBounds == null
+        || bounds != null && previewBounds != null && !bounds.equals(previewBounds)) {
       Rectangle dirty = null;
 
-      if (isVisible())
-      {
+      if (isVisible()) {
         dirty = previewBounds;
 
-        if (dirty != null)
-        {
+        if (dirty != null) {
           dirty.add(bounds);
-        }
-        else
-        {
+        } else {
           dirty = bounds;
         }
       }
 
       previewBounds = bounds;
 
-      if (dirty != null)
-      {
-        graphComponent.getGraphControl().repaint(dirty.x - 1,
-            dirty.y - 1, dirty.width + 2, dirty.height + 2);
+      if (dirty != null) {
+        graphComponent.getGraphControl().repaint(dirty.x - 1, dirty.y - 1, dirty.width + 2, dirty.height + 2);
       }
     }
   }
@@ -416,26 +370,22 @@ DropTargetListener
   /**
    *
    */
-  protected mxMovePreview createMovePreview()
-  {
+  protected mxMovePreview createMovePreview() {
     return new mxMovePreview(graphComponent);
   }
 
   /**
    *
    */
-  public mxMovePreview getMovePreview()
-  {
+  public mxMovePreview getMovePreview() {
     return movePreview;
   }
 
   /**
    *
    */
-  protected mxCellMarker createMarker()
-  {
-    mxCellMarker marker = new mxCellMarker(graphComponent, Color.BLUE)
-    {
+  protected mxCellMarker createMarker() {
+    mxCellMarker marker = new mxCellMarker(graphComponent, Color.BLUE) {
       /**
        *
        */
@@ -445,8 +395,7 @@ DropTargetListener
        *
        */
       @Override
-      public boolean isEnabled()
-      {
+      public boolean isEnabled() {
         return graphComponent.getGraph().isDropEnabled();
       }
 
@@ -454,38 +403,30 @@ DropTargetListener
        *
        */
       @Override
-      public Object getCell(MouseEvent e)
-      {
+      public Object getCell(MouseEvent e) {
         mxIGraphModel model = graphComponent.getGraph().getModel();
         TransferHandler th = graphComponent.getTransferHandler();
-        boolean isLocal = th instanceof mxGraphTransferHandler
-            && ((mxGraphTransferHandler) th).isLocalDrag();
+        boolean isLocal = th instanceof mxGraphTransferHandler && ((mxGraphTransferHandler) th).isLocalDrag();
 
         mxGraph graph = graphComponent.getGraph();
         Object cell = super.getCell(e);
-        Object[] cells = isLocal ? graph.getSelectionCells()
-            : dragCells;
+        Object[] cells = isLocal ? graph.getSelectionCells() : dragCells;
         cell = graph.getDropTarget(cells, e.getPoint(), cell);
 
         // Checks if parent is dropped into child
         Object parent = cell;
 
-        while (parent != null)
-        {
-          if (mxUtils.contains(cells, parent))
-          {
+        while (parent != null) {
+          if (mxUtils.contains(cells, parent)) {
             return null;
           }
 
           parent = model.getParent(parent);
         }
 
-        boolean clone = graphComponent.isCloneEvent(e)
-            && isCloneEnabled();
+        boolean clone = graphComponent.isCloneEvent(e) && isCloneEnabled();
 
-        if (isLocal && cell != null && cells.length > 0 && !clone
-            && graph.getModel().getParent(cells[0]) == cell)
-        {
+        if (isLocal && cell != null && cells.length > 0 && !clone && graph.getModel().getParent(cells[0]) == cell) {
           cell = null;
         }
 
@@ -503,191 +444,164 @@ DropTargetListener
   /**
    *
    */
-  public mxGraphComponent getGraphComponent()
-  {
+  public mxGraphComponent getGraphComponent() {
     return graphComponent;
   }
 
   /**
    *
    */
-  public boolean isEnabled()
-  {
+  public boolean isEnabled() {
     return enabled;
   }
 
   /**
    *
    */
-  public void setEnabled(boolean value)
-  {
+  public void setEnabled(boolean value) {
     enabled = value;
   }
 
   /**
    *
    */
-  public boolean isCloneEnabled()
-  {
+  public boolean isCloneEnabled() {
     return cloneEnabled;
   }
 
   /**
    *
    */
-  public void setCloneEnabled(boolean value)
-  {
+  public void setCloneEnabled(boolean value) {
     cloneEnabled = value;
   }
 
   /**
    *
    */
-  public boolean isMoveEnabled()
-  {
+  public boolean isMoveEnabled() {
     return moveEnabled;
   }
 
   /**
    *
    */
-  public void setMoveEnabled(boolean value)
-  {
+  public void setMoveEnabled(boolean value) {
     moveEnabled = value;
   }
 
   /**
    *
    */
-  public boolean isMarkerEnabled()
-  {
+  public boolean isMarkerEnabled() {
     return markerEnabled;
   }
 
   /**
    *
    */
-  public void setMarkerEnabled(boolean value)
-  {
+  public void setMarkerEnabled(boolean value) {
     markerEnabled = value;
   }
 
   /**
    *
    */
-  public mxCellMarker getMarker()
-  {
+  public mxCellMarker getMarker() {
     return marker;
   }
 
   /**
    *
    */
-  public void setMarker(mxCellMarker value)
-  {
+  public void setMarker(mxCellMarker value) {
     marker = value;
   }
 
   /**
    *
    */
-  public boolean isSelectEnabled()
-  {
+  public boolean isSelectEnabled() {
     return selectEnabled;
   }
 
   /**
    *
    */
-  public void setSelectEnabled(boolean value)
-  {
+  public void setSelectEnabled(boolean value) {
     selectEnabled = value;
   }
 
   /**
    *
    */
-  public boolean isRemoveCellsFromParent()
-  {
+  public boolean isRemoveCellsFromParent() {
     return removeCellsFromParent;
   }
 
   /**
    *
    */
-  public void setRemoveCellsFromParent(boolean value)
-  {
+  public void setRemoveCellsFromParent(boolean value) {
     removeCellsFromParent = value;
   }
 
   /**
    *
    */
-  public boolean isLivePreview()
-  {
+  public boolean isLivePreview() {
     return livePreview;
   }
 
   /**
    *
    */
-  public void setLivePreview(boolean value)
-  {
+  public void setLivePreview(boolean value) {
     livePreview = value;
   }
 
   /**
    *
    */
-  public boolean isImagePreview()
-  {
+  public boolean isImagePreview() {
     return imagePreview;
   }
 
   /**
    *
    */
-  public void setImagePreview(boolean value)
-  {
+  public void setImagePreview(boolean value) {
     imagePreview = value;
   }
 
   /**
    *
    */
-  public boolean isCenterPreview()
-  {
+  public boolean isCenterPreview() {
     return centerPreview;
   }
 
   /**
    *
    */
-  public void setCenterPreview(boolean value)
-  {
+  public void setCenterPreview(boolean value) {
     centerPreview = value;
   }
 
   /**
    *
    */
-  public void updateDragImage(Object[] cells)
-  {
+  public void updateDragImage(Object[] cells) {
     dragImage = null;
 
-    if (cells != null && cells.length > 0)
-    {
-      Image img = mxCellRenderer.createBufferedImage(
-          graphComponent.getGraph(), cells, graphComponent.getGraph()
-          .getView().getScale(), null,
-          graphComponent.isAntiAlias(), null,
+    if (cells != null && cells.length > 0) {
+      Image img = mxCellRenderer.createBufferedImage(graphComponent.getGraph(), cells,
+          graphComponent.getGraph().getView().getScale(), null, graphComponent.isAntiAlias(), null,
           graphComponent.getCanvas());
 
-      if (img != null)
-      {
+      if (img != null) {
         dragImage = new ImageIcon(img);
-        previewBounds.setSize(dragImage.getIconWidth(),
-            dragImage.getIconHeight());
+        previewBounds.setSize(dragImage.getIconWidth(), dragImage.getIconHeight());
       }
     }
   }
@@ -696,19 +610,14 @@ DropTargetListener
    *
    */
   @Override
-  public void mouseMoved(MouseEvent e)
-  {
-    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed())
-    {
+  public void mouseMoved(MouseEvent e) {
+    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed()) {
       Cursor cursor = getCursor(e);
 
-      if (cursor != null)
-      {
+      if (cursor != null) {
         graphComponent.getGraphControl().setCursor(cursor);
         e.consume();
-      }
-      else
-      {
+      } else {
         graphComponent.getGraphControl().setCursor(DEFAULT_CURSOR);
       }
     }
@@ -717,24 +626,16 @@ DropTargetListener
   /**
    *
    */
-  protected Cursor getCursor(MouseEvent e)
-  {
+  protected Cursor getCursor(MouseEvent e) {
     Cursor cursor = null;
 
-    if (isMoveEnabled())
-    {
+    if (isMoveEnabled()) {
       Object cell = graphComponent.getCellAt(e.getX(), e.getY(), false);
 
-      if (cell != null)
-      {
-        if (graphComponent.isFoldingEnabled()
-            && graphComponent.hitFoldingIcon(cell, e.getX(),
-                e.getY()))
-        {
+      if (cell != null) {
+        if (graphComponent.isFoldingEnabled() && graphComponent.hitFoldingIcon(cell, e.getX(), e.getY())) {
           cursor = FOLD_CURSOR;
-        }
-        else if (graphComponent.getGraph().isCellMovable(cell))
-        {
+        } else if (graphComponent.getGraph().isCellMovable(cell)) {
           cursor = MOVE_CURSOR;
         }
       }
@@ -746,73 +647,50 @@ DropTargetListener
   /**
    *
    */
-  public void dragEnter(DropTargetDragEvent e)
-  {
+  public void dragEnter(DropTargetDragEvent e) {
     JComponent component = getDropTarget(e);
     TransferHandler th = component.getTransferHandler();
-    boolean isLocal = th instanceof mxGraphTransferHandler
-        && ((mxGraphTransferHandler) th).isLocalDrag();
+    boolean isLocal = th instanceof mxGraphTransferHandler && ((mxGraphTransferHandler) th).isLocalDrag();
 
-    if (isLocal)
-    {
+    if (isLocal) {
       canImport = true;
-    }
-    else
-    {
-      canImport = graphComponent.isImportEnabled()
-          && th.canImport(component, e.getCurrentDataFlavors());
+    } else {
+      canImport = graphComponent.isImportEnabled() && th.canImport(component, e.getCurrentDataFlavors());
     }
 
-    if (canImport)
-    {
+    if (canImport) {
       transferBounds = null;
       setVisible(false);
 
-      try
-      {
+      try {
         Transferable t = e.getTransferable();
 
-        if (t.isDataFlavorSupported(mxGraphTransferable.dataFlavor))
-        {
-          mxGraphTransferable gt = (mxGraphTransferable) t
-              .getTransferData(mxGraphTransferable.dataFlavor);
+        if (t.isDataFlavorSupported(mxGraphTransferable.dataFlavor)) {
+          mxGraphTransferable gt = (mxGraphTransferable) t.getTransferData(mxGraphTransferable.dataFlavor);
           dragCells = gt.getCells();
 
-          if (gt.getBounds() != null)
-          {
+          if (gt.getBounds() != null) {
             mxGraph graph = graphComponent.getGraph();
             double scale = graph.getView().getScale();
             transferBounds = gt.getBounds();
-            int w = (int) Math.ceil((transferBounds.getWidth() + 1)
-                * scale);
-            int h = (int) Math
-                .ceil((transferBounds.getHeight() + 1) * scale);
-            setPreviewBounds(new Rectangle(
-                (int) transferBounds.getX(),
-                (int) transferBounds.getY(), w, h));
+            int w = (int) Math.ceil((transferBounds.getWidth() + 1) * scale);
+            int h = (int) Math.ceil((transferBounds.getHeight() + 1) * scale);
+            setPreviewBounds(new Rectangle((int) transferBounds.getX(), (int) transferBounds.getY(), w, h));
 
-            if (imagePreview)
-            {
+            if (imagePreview) {
               // Does not render fixed cells for local preview
               // but ignores movable state for non-local previews
-              if (isLocal)
-              {
-                if (!isLivePreview())
-                {
-                  updateDragImage(graph
-                      .getMovableCells(dragCells));
+              if (isLocal) {
+                if (!isLivePreview()) {
+                  updateDragImage(graph.getMovableCells(dragCells));
                 }
-              }
-              else
-              {
-                Object[] tmp = graphComponent
-                    .getImportableCells(dragCells);
+              } else {
+                Object[] tmp = graphComponent.getImportableCells(dragCells);
                 updateDragImage(tmp);
 
                 // Shows no drag icon if import is allowed but none
                 // of the cells can be imported
-                if (tmp == null || tmp.length == 0)
-                {
+                if (tmp == null || tmp.length == 0) {
                   canImport = false;
                   e.rejectDrag();
 
@@ -826,16 +704,12 @@ DropTargetListener
         }
 
         e.acceptDrag(TransferHandler.COPY_OR_MOVE);
-      }
-      catch (Exception ex)
-      {
+      } catch (Exception ex) {
         // do nothing
         log.log(Level.SEVERE, "Failed to handle dragEnter", ex);
       }
 
-    }
-    else
-    {
+    } else {
       e.rejectDrag();
     }
   }
@@ -844,33 +718,24 @@ DropTargetListener
    *
    */
   @Override
-  public void mousePressed(MouseEvent e)
-  {
-    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed()
-        && !graphComponent.isForceMarqueeEvent(e))
-    {
+  public void mousePressed(MouseEvent e) {
+    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed() && !graphComponent.isForceMarqueeEvent(e)) {
       cell = graphComponent.getCellAt(e.getX(), e.getY(), false);
       initialCell = cell;
 
-      if (cell != null)
-      {
-        if (isSelectEnabled()
-            && !graphComponent.getGraph().isCellSelected(cell))
-        {
+      if (cell != null) {
+        if (isSelectEnabled() && !graphComponent.getGraph().isCellSelected(cell)) {
           graphComponent.selectCellForEvent(cell, e);
           cell = null;
         }
 
         // Starts move if the cell under the mouse is movable and/or any
         // cells of the selection are movable
-        if (isMoveEnabled() && !e.isPopupTrigger())
-        {
+        if (isMoveEnabled() && !e.isPopupTrigger()) {
           start(e);
           e.consume();
         }
-      }
-      else if (e.isPopupTrigger())
-      {
+      } else if (e.isPopupTrigger()) {
         graphComponent.getGraph().clearSelection();
       }
     }
@@ -879,8 +744,7 @@ DropTargetListener
   /**
    *
    */
-  public Object[] getCells(Object initialCell)
-  {
+  public Object[] getCells(Object initialCell) {
     mxGraph graph = graphComponent.getGraph();
 
     return graph.getMovableCells(graph.getSelectionCells());
@@ -889,23 +753,17 @@ DropTargetListener
   /**
    *
    */
-  public void start(MouseEvent e)
-  {
-    if (isLivePreview())
-    {
-      movePreview.start(e,
-          graphComponent.getGraph().getView().getState(initialCell));
-    }
-    else
-    {
+  public void start(MouseEvent e) {
+    if (isLivePreview()) {
+      movePreview.start(e, graphComponent.getGraph().getView().getState(initialCell));
+    } else {
       mxGraph graph = graphComponent.getGraph();
 
       // Constructs an array with cells that are indeed movable
       cells = getCells(initialCell);
       cellBounds = graph.getView().getBounds(cells);
 
-      if (cellBounds != null)
-      {
+      if (cellBounds != null) {
         // Updates the size of the graph handler that is in
         // charge of painting all other handlers
         bbox = graph.getView().getBoundingBox(cells);
@@ -923,8 +781,7 @@ DropTargetListener
   /**
    *
    */
-  public void dropActionChanged(DropTargetDragEvent e)
-  {
+  public void dropActionChanged(DropTargetDragEvent e) {
     // do nothing
   }
 
@@ -932,19 +789,15 @@ DropTargetListener
    *
    * @param e
    */
-  public void dragOver(DropTargetDragEvent e)
-  {
-    if (canImport)
-    {
+  public void dragOver(DropTargetDragEvent e) {
+    if (canImport) {
       mouseDragged(createEvent(e));
       mxGraphTransferHandler handler = getGraphTransferHandler(e);
 
-      if (handler != null)
-      {
+      if (handler != null) {
         mxGraph graph = graphComponent.getGraph();
         double scale = graph.getView().getScale();
-        Point pt = SwingUtilities.convertPoint(graphComponent,
-            e.getLocation(), graphComponent.getGraphControl());
+        Point pt = SwingUtilities.convertPoint(graphComponent, e.getLocation(), graphComponent.getGraphControl());
 
         pt = graphComponent.snapScaledPoint(new mxPoint(pt)).getPoint();
         handler.setLocation(new Point(pt));
@@ -953,39 +806,29 @@ DropTargetListener
         int dy = 0;
 
         // Centers the preview image
-        if (centerPreview && transferBounds != null)
-        {
+        if (centerPreview && transferBounds != null) {
           dx -= Math.round(transferBounds.getWidth() * scale / 2);
           dy -= Math.round(transferBounds.getHeight() * scale / 2);
         }
 
         // Sets the drop offset so that the location in the transfer
         // handler reflects the actual mouse position
-        handler.setOffset(new Point((int) graph.snap(dx / scale),
-            (int) graph.snap(dy / scale)));
+        handler.setOffset(new Point((int) graph.snap(dx / scale), (int) graph.snap(dy / scale)));
         pt.translate(dx, dy);
 
         // Shifts the preview so that overlapping parts do not
         // affect the centering
-        if (transferBounds != null && dragImage != null)
-        {
-          dx = (int) Math
-              .round((dragImage.getIconWidth() - 2 - transferBounds
-                  .getWidth() * scale) / 2);
-          dy = (int) Math
-              .round((dragImage.getIconHeight() - 2 - transferBounds
-                  .getHeight() * scale) / 2);
+        if (transferBounds != null && dragImage != null) {
+          dx = (int) Math.round((dragImage.getIconWidth() - 2 - transferBounds.getWidth() * scale) / 2);
+          dy = (int) Math.round((dragImage.getIconHeight() - 2 - transferBounds.getHeight() * scale) / 2);
           pt.translate(-dx, -dy);
         }
 
-        if (!handler.isLocalDrag() && previewBounds != null)
-        {
+        if (!handler.isLocalDrag() && previewBounds != null) {
           setPreviewBounds(new Rectangle(pt, previewBounds.getSize()));
         }
       }
-    }
-    else
-    {
+    } else {
       e.rejectDrag();
     }
   }
@@ -993,10 +836,8 @@ DropTargetListener
   /**
    *
    */
-  public Point convertPoint(Point pt)
-  {
-    pt = SwingUtilities.convertPoint(graphComponent, pt,
-        graphComponent.getGraphControl());
+  public Point convertPoint(Point pt) {
+    pt = SwingUtilities.convertPoint(graphComponent, pt, graphComponent.getGraphControl());
 
     pt.x -= graphComponent.getHorizontalScrollBar().getValue();
     pt.y -= graphComponent.getVerticalScrollBar().getValue();
@@ -1008,81 +849,60 @@ DropTargetListener
    *
    */
   @Override
-  public void mouseDragged(MouseEvent e)
-  {
+  public void mouseDragged(MouseEvent e) {
     // LATER: Check scrollborder, use scroll-increments, do not
     // scroll when over ruler dragging from library
-    if (graphComponent.isAutoScroll())
-    {
-      graphComponent.getGraphControl().scrollRectToVisible(
-          new Rectangle(e.getPoint()));
+    if (graphComponent.isAutoScroll()) {
+      graphComponent.getGraphControl().scrollRectToVisible(new Rectangle(e.getPoint()));
     }
 
-    if (!e.isConsumed())
-    {
+    if (!e.isConsumed()) {
       gridEnabledEvent = graphComponent.isGridEnabledEvent(e);
       constrainedEvent = graphComponent.isConstrainedEvent(e);
 
-      if (constrainedEvent && first != null)
-      {
+      if (constrainedEvent && first != null) {
         int x = e.getX();
         int y = e.getY();
 
-        if (Math.abs(e.getX() - first.x) > Math.abs(e.getY() - first.y))
-        {
+        if (Math.abs(e.getX() - first.x) > Math.abs(e.getY() - first.y)) {
           y = first.y;
-        }
-        else
-        {
+        } else {
           x = first.x;
         }
 
-        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(),
-            e.getModifiers(), x, y, e.getClickCount(),
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), x, y, e.getClickCount(),
             e.isPopupTrigger(), e.getButton());
       }
 
-      if (isVisible() && isMarkerEnabled())
-      {
+      if (isVisible() && isMarkerEnabled()) {
         marker.process(e);
       }
 
-      if (first != null)
-      {
-        if (movePreview.isActive())
-        {
+      if (first != null) {
+        if (movePreview.isActive()) {
           double dx = e.getX() - first.x;
           double dy = e.getY() - first.y;
 
-          if (graphComponent.isGridEnabledEvent(e))
-          {
+          if (graphComponent.isGridEnabledEvent(e)) {
             mxGraph graph = graphComponent.getGraph();
 
             dx = graph.snap(dx);
             dy = graph.snap(dy);
           }
 
-          boolean clone = isCloneEnabled()
-              && graphComponent.isCloneEvent(e);
+          boolean clone = isCloneEnabled() && graphComponent.isCloneEvent(e);
           movePreview.update(e, dx, dy, clone);
           e.consume();
-        }
-        else if (cellBounds != null)
-        {
+        } else if (cellBounds != null) {
           double dx = e.getX() - first.x;
           double dy = e.getY() - first.y;
 
-          if (previewBounds != null)
-          {
-            setPreviewBounds(new Rectangle(getPreviewLocation(e,
-                gridEnabledEvent), previewBounds.getSize()));
+          if (previewBounds != null) {
+            setPreviewBounds(new Rectangle(getPreviewLocation(e, gridEnabledEvent), previewBounds.getSize()));
           }
 
-          if (!isVisible() && graphComponent.isSignificant(dx, dy))
-          {
-            if (imagePreview && dragImage == null
-                && !graphComponent.isDragEnabled())
-            {
+          if (!isVisible() && graphComponent.isSignificant(dx, dy)) {
+            if (imagePreview && dragImage == null && !graphComponent.isDragEnabled()) {
               updateDragImage(cells);
             }
 
@@ -1098,21 +918,21 @@ DropTargetListener
   /**
    *
    */
-  protected Point getPreviewLocation(MouseEvent e, boolean gridEnabled)
-  {
+  protected Point getPreviewLocation(MouseEvent e, boolean gridEnabled) {
     int x = 0;
     int y = 0;
 
-    if (first != null && cellBounds != null)
-    {
+    if (first != null && cellBounds != null) {
       mxGraph graph = graphComponent.getGraph();
       double scale = graph.getView().getScale();
       mxPoint trans = graph.getView().getTranslate();
 
       // LATER: Drag image _size_ depends on the initial position and may sometimes
-      // not align with the grid when dragging. This is because the rounding of the width
+      // not align with the grid when dragging. This is because the rounding of the
+      // width
       // and height at the initial position may be different than that at the current
-      // position as the left and bottom side of the shape must align to the grid lines.
+      // position as the left and bottom side of the shape must align to the grid
+      // lines.
       // Only fix is a full repaint of the drag cells at each new mouse location.
       double dx = e.getX() - first.x;
       double dy = e.getY() - first.y;
@@ -1120,17 +940,14 @@ DropTargetListener
       double dxg = (cellBounds.getX() + dx) / scale - trans.getX();
       double dyg = (cellBounds.getY() + dy) / scale - trans.getY();
 
-      if (gridEnabled)
-      {
+      if (gridEnabled) {
         dxg = graph.snap(dxg);
         dyg = graph.snap(dyg);
       }
 
-      x = (int) Math.round((dxg + trans.getX()) * scale)
-          + (int) Math.round(bbox.getX())
+      x = (int) Math.round((dxg + trans.getX()) * scale) + (int) Math.round(bbox.getX())
           - (int) Math.round(cellBounds.getX());
-      y = (int) Math.round((dyg + trans.getY()) * scale)
-          + (int) Math.round(bbox.getY())
+      y = (int) Math.round((dyg + trans.getY()) * scale) + (int) Math.round(bbox.getY())
           - (int) Math.round(cellBounds.getY());
     }
 
@@ -1141,12 +958,10 @@ DropTargetListener
    *
    * @param e
    */
-  public void dragExit(DropTargetEvent e)
-  {
+  public void dragExit(DropTargetEvent e) {
     mxGraphTransferHandler handler = getGraphTransferHandler(e);
 
-    if (handler != null)
-    {
+    if (handler != null) {
       handler.setLocation(null);
     }
 
@@ -1160,17 +975,14 @@ DropTargetListener
    *
    * @param e
    */
-  public void drop(DropTargetDropEvent e)
-  {
-    if (canImport)
-    {
+  public void drop(DropTargetDropEvent e) {
+    if (canImport) {
       mxGraphTransferHandler handler = getGraphTransferHandler(e);
       MouseEvent event = createEvent(e);
 
       // Ignores the event in mouseReleased if it is
       // handled by the transfer handler as a drop
-      if (handler != null && !handler.isLocalDrag())
-      {
+      if (handler != null && !handler.isLocalDrag()) {
         event.consume();
       }
 
@@ -1182,16 +994,13 @@ DropTargetListener
    *
    */
   @Override
-  public void mouseReleased(MouseEvent e)
-  {
-    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed())
-    {
+  public void mouseReleased(MouseEvent e) {
+    if (graphComponent.isEnabled() && isEnabled() && !e.isConsumed()) {
       mxGraph graph = graphComponent.getGraph();
       double dx = 0;
       double dy = 0;
 
-      if (first != null && (cellBounds != null || movePreview.isActive()))
-      {
+      if (first != null && (cellBounds != null || movePreview.isActive())) {
         double scale = graph.getView().getScale();
         mxPoint trans = graph.getView().getTranslate();
 
@@ -1200,147 +1009,95 @@ DropTargetListener
         dx = e.getX() - first.x;
         dy = e.getY() - first.y;
 
-        if (cellBounds != null)
-        {
-          double dxg = (cellBounds.getX() + dx) / scale
-              - trans.getX();
-          double dyg = (cellBounds.getY() + dy) / scale
-              - trans.getY();
+        if (cellBounds != null) {
+          double dxg = (cellBounds.getX() + dx) / scale - trans.getX();
+          double dyg = (cellBounds.getY() + dy) / scale - trans.getY();
 
-          if (gridEnabledEvent)
-          {
+          if (gridEnabledEvent) {
             dxg = graph.snap(dxg);
             dyg = graph.snap(dyg);
           }
 
-          double x = (dxg + trans.getX()) * scale + bbox.getX()
-          - cellBounds.getX();
-          double y = (dyg + trans.getY()) * scale + bbox.getY()
-          - cellBounds.getY();
+          double x = (dxg + trans.getX()) * scale + bbox.getX() - cellBounds.getX();
+          double y = (dyg + trans.getY()) * scale + bbox.getY() - cellBounds.getY();
 
           dx = Math.round((x - bbox.getX()) / scale);
           dy = Math.round((y - bbox.getY()) / scale);
         }
       }
 
-      if (first == null
-          || !graphComponent.isSignificant(e.getX() - first.x,
-              e.getY() - first.y))
-      {
+      if (first == null || !graphComponent.isSignificant(e.getX() - first.x, e.getY() - first.y)) {
         // Delayed handling of selection
-        if (cell != null && !e.isPopupTrigger() && isSelectEnabled()
-            && (first != null || !isMoveEnabled()))
-        {
+        if (cell != null && !e.isPopupTrigger() && isSelectEnabled() && (first != null || !isMoveEnabled())) {
           graphComponent.selectCellForEvent(cell, e);
         }
 
         // Delayed folding for cell that was initially under the mouse
-        if (graphComponent.isFoldingEnabled()
-            && graphComponent.hitFoldingIcon(initialCell, e.getX(),
-                e.getY()))
-        {
+        if (graphComponent.isFoldingEnabled() && graphComponent.hitFoldingIcon(initialCell, e.getX(), e.getY())) {
           fold(initialCell);
-        }
-        else
-        {
+        } else {
           // Handles selection if no cell was initially under the mouse
-          Object tmp = graphComponent.getCellAt(e.getX(), e.getY(),
-              graphComponent.isSwimlaneSelectionEnabled());
+          Object tmp = graphComponent.getCellAt(e.getX(), e.getY(), graphComponent.isSwimlaneSelectionEnabled());
 
-          if (cell == null && first == null)
-          {
-            if (tmp == null)
-            {
-              if (!graphComponent.isToggleEvent(e))
-              {
+          if (cell == null && first == null) {
+            if (tmp == null) {
+              if (!graphComponent.isToggleEvent(e)) {
                 graph.clearSelection();
               }
-            }
-            else if (graph.isSwimlane(tmp)
-                && graphComponent.getCanvas()
-                .hitSwimlaneContent(graphComponent,
-                    graph.getView().getState(tmp),
-                    e.getX(), e.getY()))
-            {
+            } else if (graph.isSwimlane(tmp) && graphComponent.getCanvas().hitSwimlaneContent(graphComponent,
+                graph.getView().getState(tmp), e.getX(), e.getY())) {
               graphComponent.selectCellForEvent(tmp, e);
             }
           }
 
-          if (graphComponent.isFoldingEnabled()
-              && graphComponent.hitFoldingIcon(tmp, e.getX(),
-                  e.getY()))
-          {
+          if (graphComponent.isFoldingEnabled() && graphComponent.hitFoldingIcon(tmp, e.getX(), e.getY())) {
             fold(tmp);
             e.consume();
           }
         }
-      }
-      else if (movePreview.isActive())
-      {
-        if (graphComponent.isConstrainedEvent(e))
-        {
-          if (Math.abs(dx) > Math.abs(dy))
-          {
+      } else if (movePreview.isActive()) {
+        if (graphComponent.isConstrainedEvent(e)) {
+          if (Math.abs(dx) > Math.abs(dy)) {
             dy = 0;
-          }
-          else
-          {
+          } else {
             dx = 0;
           }
         }
 
         mxCellState markedState = marker.getMarkedState();
-        Object target = markedState != null ? markedState.getCell()
-            : null;
+        Object target = markedState != null ? markedState.getCell() : null;
 
         // FIXME: Cell is null if selection was carried out, need other variable
-        //trace("cell", cell);
+        // trace("cell", cell);
 
-        if (target == null
-            && isRemoveCellsFromParent()
-            && shouldRemoveCellFromParent(graph.getModel()
-                .getParent(initialCell), cells, e))
-        {
+        if (target == null && isRemoveCellsFromParent()
+            && shouldRemoveCellFromParent(graph.getModel().getParent(initialCell), cells, e)) {
           target = graph.getDefaultParent();
         }
 
-        boolean clone = isCloneEnabled()
-            && graphComponent.isCloneEvent(e);
-        Object[] result = movePreview.stop(true, e, dx, dy, clone,
-            target);
+        boolean clone = isCloneEnabled() && graphComponent.isCloneEvent(e);
+        Object[] result = movePreview.stop(true, e, dx, dy, clone, target);
 
-        if (cells != result)
-        {
+        if (cells != result) {
           graph.setSelectionCells(result);
         }
 
         e.consume();
-      }
-      else if (isVisible())
-      {
-        if (constrainedEvent)
-        {
-          if (Math.abs(dx) > Math.abs(dy))
-          {
+      } else if (isVisible()) {
+        if (constrainedEvent) {
+          if (Math.abs(dx) > Math.abs(dy)) {
             dy = 0;
-          }
-          else
-          {
+          } else {
             dx = 0;
           }
         }
 
         mxCellState targetState = marker.getValidState();
-        Object target = targetState != null ? targetState.getCell()
-            : null;
+        Object target = targetState != null ? targetState.getCell() : null;
 
-        if (graph.isSplitEnabled()
-            && graph.isSplitTarget(target, cells))
-        {
+        if (graph.isSplitEnabled() && graph.isSplitTarget(target, cells)) {
           graph.splitEdge(target, cells, dx, dy);
-        }
-        else
-        {
+        } else {
           moveCells(cells, dx, dy, target, e);
         }
 
@@ -1354,20 +1111,16 @@ DropTargetListener
   /**
    *
    */
-  protected void fold(Object cell)
-  {
+  protected void fold(Object cell) {
     boolean collapse = !graphComponent.getGraph().isCellCollapsed(cell);
-    graphComponent.getGraph().foldCells(collapse, false,
-        new Object[] { cell });
+    graphComponent.getGraph().foldCells(collapse, false, new Object[] { cell });
   }
 
   /**
    *
    */
-  public void reset()
-  {
-    if (movePreview.isActive())
-    {
+  public void reset() {
+    if (movePreview.isActive()) {
       movePreview.stop(false, null, 0, 0, false, null);
     }
 
@@ -1382,16 +1135,12 @@ DropTargetListener
   }
 
   /**
-   * Returns true if the given cells should be removed from the parent for the specified
-   * mousereleased event.
+   * Returns true if the given cells should be removed from the parent for the
+   * specified mousereleased event.
    */
-  protected boolean shouldRemoveCellFromParent(Object parent, Object[] cells,
-      MouseEvent e)
-  {
-    if (graphComponent.getGraph().getModel().isVertex(parent))
-    {
-      mxCellState pState = graphComponent.getGraph().getView()
-          .getState(parent);
+  protected boolean shouldRemoveCellFromParent(Object parent, Object[] cells, MouseEvent e) {
+    if (graphComponent.getGraph().getModel().isVertex(parent)) {
+      mxCellState pState = graphComponent.getGraph().getView().getState(parent);
 
       return pState != null && !pState.contains(e.getX(), e.getY());
     }
@@ -1405,34 +1154,24 @@ DropTargetListener
    * @param dy
    * @param e
    */
-  protected void moveCells(Object[] cells, double dx, double dy,
-      Object target, MouseEvent e)
-  {
+  protected void moveCells(Object[] cells, double dx, double dy, Object target, MouseEvent e) {
     mxGraph graph = graphComponent.getGraph();
     boolean clone = e.isControlDown() && isCloneEnabled();
 
-    if (clone)
-    {
+    if (clone) {
       cells = graph.getCloneableCells(cells);
     }
 
-    if (cells.length > 0)
-    {
+    if (cells.length > 0) {
       // Removes cells from parent
-      if (target == null
-          && isRemoveCellsFromParent()
-          && shouldRemoveCellFromParent(
-              graph.getModel().getParent(initialCell), cells, e))
-      {
+      if (target == null && isRemoveCellsFromParent()
+          && shouldRemoveCellFromParent(graph.getModel().getParent(initialCell), cells, e)) {
         target = graph.getDefaultParent();
       }
 
-      Object[] tmp = graph.moveCells(cells, dx, dy, clone, target,
-          e.getPoint());
+      Object[] tmp = graph.moveCells(cells, dx, dy, clone, target, e.getPoint());
 
-      if (isSelectEnabled() && clone && tmp != null
-          && tmp.length == cells.length)
-      {
+      if (isSelectEnabled() && clone && tmp != null && tmp.length == cells.length) {
         graph.setSelectionCells(tmp);
       }
     }
@@ -1441,33 +1180,23 @@ DropTargetListener
   /**
    *
    */
-  public void paint(Graphics g)
-  {
-    if (isVisible() && previewBounds != null)
-    {
-      if (dragImage != null)
-      {
+  public void paint(Graphics g) {
+    if (isVisible() && previewBounds != null) {
+      if (dragImage != null) {
         // LATER: Clipping with mxUtils doesnt fix the problem
         // of the drawImage being painted over the scrollbars
         Graphics2D tmp = (Graphics2D) g.create();
 
-        if (graphComponent.getPreviewAlpha() < 1)
-        {
-          tmp.setComposite(AlphaComposite.getInstance(
-              AlphaComposite.SRC_OVER,
-              graphComponent.getPreviewAlpha()));
+        if (graphComponent.getPreviewAlpha() < 1) {
+          tmp.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, graphComponent.getPreviewAlpha()));
         }
 
-        tmp.drawImage(dragImage.getImage(), previewBounds.x,
-            previewBounds.y, dragImage.getIconWidth(),
+        tmp.drawImage(dragImage.getImage(), previewBounds.x, previewBounds.y, dragImage.getIconWidth(),
             dragImage.getIconHeight(), null);
         tmp.dispose();
-      }
-      else if (!imagePreview)
-      {
-        mxSwingConstants.PREVIEW_BORDER.paintBorder(graphComponent, g,
-            previewBounds.x, previewBounds.y, previewBounds.width,
-            previewBounds.height);
+      } else if (!imagePreview) {
+        mxSwingConstants.PREVIEW_BORDER.paintBorder(graphComponent, g, previewBounds.x, previewBounds.y,
+            previewBounds.width, previewBounds.height);
       }
     }
   }
@@ -1475,25 +1204,20 @@ DropTargetListener
   /**
    *
    */
-  protected MouseEvent createEvent(DropTargetEvent e)
-  {
+  protected MouseEvent createEvent(DropTargetEvent e) {
     JComponent component = getDropTarget(e);
     Point location = null;
     int action = 0;
 
-    if (e instanceof DropTargetDropEvent)
-    {
+    if (e instanceof DropTargetDropEvent) {
       location = ((DropTargetDropEvent) e).getLocation();
       action = ((DropTargetDropEvent) e).getDropAction();
-    }
-    else if (e instanceof DropTargetDragEvent)
-    {
+    } else if (e instanceof DropTargetDragEvent) {
       location = ((DropTargetDragEvent) e).getLocation();
       action = ((DropTargetDragEvent) e).getDropAction();
     }
 
-    if (location != null)
-    {
+    if (location != null) {
       location = convertPoint(location);
       Rectangle r = graphComponent.getViewport().getViewRect();
       location.translate(r.x, r.y);
@@ -1506,21 +1230,18 @@ DropTargetListener
     // handler is not called during drag and drop.
     int mod = action == TransferHandler.COPY ? InputEvent.CTRL_MASK : 0;
 
-    return new MouseEvent(component, 0, System.currentTimeMillis(), mod,
-        location.x, location.y, 1, false, MouseEvent.BUTTON1);
+    return new MouseEvent(component, 0, System.currentTimeMillis(), mod, location.x, location.y, 1, false,
+        MouseEvent.BUTTON1);
   }
 
   /**
    * Helper method to return the component for a drop target event.
    */
-  protected static final mxGraphTransferHandler getGraphTransferHandler(
-      DropTargetEvent e)
-  {
+  protected static final mxGraphTransferHandler getGraphTransferHandler(DropTargetEvent e) {
     JComponent component = getDropTarget(e);
     TransferHandler transferHandler = component.getTransferHandler();
 
-    if (transferHandler instanceof mxGraphTransferHandler)
-    {
+    if (transferHandler instanceof mxGraphTransferHandler) {
       return (mxGraphTransferHandler) transferHandler;
     }
 
@@ -1530,8 +1251,7 @@ DropTargetListener
   /**
    * Helper method to return the component for a drop target event.
    */
-  protected static final JComponent getDropTarget(DropTargetEvent e)
-  {
+  protected static final JComponent getDropTarget(DropTargetEvent e) {
     return (JComponent) e.getDropTargetContext().getComponent();
   }
 

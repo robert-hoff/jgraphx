@@ -6279,7 +6279,7 @@ public class mxGraph extends mxEventSource {
 
       if (includeLoops && source == target || source != target
           && (incoming && target == cell && (parent == null || isValidAncestor(source, parent, recurse))
-          || outgoing && source == cell && (parent == null || isValidAncestor(target, parent, recurse)))) {
+              || outgoing && source == cell && (parent == null || isValidAncestor(target, parent, recurse)))) {
         result.add(edge);
       }
     }

@@ -16,9 +16,7 @@ import com.mxgraph.view.mxGraph;
 
 public class CustomCanvas extends JFrame {
 
-  /**
-   *
-   */
+
   private static final long serialVersionUID = -844106998814982739L;
 
   public CustomCanvas() {

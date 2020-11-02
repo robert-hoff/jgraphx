@@ -118,10 +118,6 @@ public class mxGraphModel extends mxEventSource implements mxIGraphModel, Serial
    * fired. Initial value is 0.
    */
   protected transient int updateLevel = 0;
-
-  /**
-   *
-   */
   protected transient boolean endingUpdate = false;
 
   /**
@@ -129,26 +125,25 @@ public class mxGraphModel extends mxEventSource implements mxIGraphModel, Serial
    */
   public mxGraphModel() {
     this(null);
-    System.err.println("mxGraphModel()");
   }
-
 
   /**
    * Constructs a new graph model. If no root is specified then a new root mxCell
    * with a default layer is created.
    *
    * @param root
-   *          Cell that represents the root cell.
+   *          Cell that represents the root cell. Which must implement the
+   *          mxICell interface
    */
   public mxGraphModel(Object root) {
     currentEdit = createUndoableEdit();
-
     if (root != null) {
       setRoot(root);
     } else {
       clear();
     }
   }
+
 
   /**
    * Sets a new root using createRoot.

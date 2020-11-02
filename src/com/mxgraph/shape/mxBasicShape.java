@@ -2,12 +2,10 @@
  * Copyright (c) 2010, Gaudenz Alder, David Benson
  */
 package com.mxgraph.shape;
-
 import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.util.Map;
-
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxRectangle;
@@ -16,18 +14,14 @@ import com.mxgraph.view.mxCellState;
 
 public class mxBasicShape implements mxIShape {
 
-  /**
-   * 
-   */
+  @Override
   public void paintShape(mxGraphics2DCanvas canvas, mxCellState state) {
     Shape shape = createShape(canvas, state);
-
     if (shape != null) {
       // Paints the background
       if (configureGraphics(canvas, state, true)) {
         canvas.fillShape(shape, hasShadow(canvas, state));
       }
-
       // Paints the foreground
       if (configureGraphics(canvas, state, false)) {
         canvas.getGraphics().draw(shape);
@@ -35,23 +29,17 @@ public class mxBasicShape implements mxIShape {
     }
   }
 
-  /**
-   * 
-   */
   public Shape createShape(mxGraphics2DCanvas canvas, mxCellState state) {
     return null;
   }
 
   /**
    * Configures the graphics object ready to paint.
-   * 
-   * @param canvas
-   *          the canvas to be painted to
-   * @param state
-   *          the state of cell to be painted
-   * @param background
-   *          whether or not this is the background stage of the shape paint
+   * @param canvas the canvas to be painted to
+   * @param state the state of cell to be painted
+   * @param background whether or not this is the background stage of the shape paint
    * @return whether or not the shape is ready to be drawn
+   *
    */
   protected boolean configureGraphics(mxGraphics2DCanvas canvas, mxCellState state, boolean background) {
     Map<String, Object> style = state.getStyle();
@@ -81,39 +69,34 @@ public class mxBasicShape implements mxIShape {
     }
   }
 
-  /**
-   * 
-   */
   protected mxRectangle getGradientBounds(mxGraphics2DCanvas canvas, mxCellState state) {
     return state;
   }
 
-  /**
-   * 
-   */
   public boolean hasGradient(mxGraphics2DCanvas canvas, mxCellState state) {
     return true;
   }
 
-  /**
-   * 
-   */
   public boolean hasShadow(mxGraphics2DCanvas canvas, mxCellState state) {
     return mxUtils.isTrue(state.getStyle(), mxConstants.STYLE_SHADOW, false);
   }
 
-  /**
-   * 
-   */
   public Color getFillColor(mxGraphics2DCanvas canvas, mxCellState state) {
     return mxUtils.getColor(state.getStyle(), mxConstants.STYLE_FILLCOLOR);
   }
 
-  /**
-   * 
-   */
   public Color getStrokeColor(mxGraphics2DCanvas canvas, mxCellState state) {
     return mxUtils.getColor(state.getStyle(), mxConstants.STYLE_STROKECOLOR);
   }
 
+
+
+
+
 }
+
+
+
+
+
+

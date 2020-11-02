@@ -21,11 +21,8 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxMultiplicity;
 
 public class Validation extends JFrame {
-
-  /**
-   * 
-   */
   private static final long serialVersionUID = -8928982366041695471L;
+
 
   public Validation() {
     super("Hello, World!");
@@ -83,6 +80,7 @@ public class Validation extends JFrame {
     // Installs automatic validation (use editor.validation = true
     // if you are using an mxEditor instance)
     graph.getModel().addListener(mxEvent.CHANGE, new mxIEventListener() {
+      @Override
       public void invoke(Object sender, mxEventObject evt) {
         graphComponent.validateGraph();
       }
